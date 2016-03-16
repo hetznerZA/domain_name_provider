@@ -1,8 +1,6 @@
 # DomainNameGem
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/domain_name_gem`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem provides the ability to talk to Hetzner api regarding domain_name end points.
 
 ## Installation
 
@@ -22,7 +20,6 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
 
 ## Development
 
@@ -32,5 +29,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/domain_name_gem.
-
+Bug reports and pull requests are welcome on GitHub at https://github.hetzner.co.za/hetznerZA/domain_name_data_service.
