@@ -20,8 +20,6 @@ module DomainNameGem
       def servers_domain_hosted_on(domain_name)
         url = URI.parse(@configuration[:uri])
         setup_connection(url)
-        puts url.request_uri
-
         get(url.request_uri)
       end
 
