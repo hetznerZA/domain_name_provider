@@ -26,6 +26,7 @@ module DomainNameGem
         parameters[:ssl][:verify] = false if @configuration[:options] && @configuration[:options][:verify_ssl] == false
 
         @connection = Faraday.new(parameters).tap do |conn|
+          #TODO: Cleanup basic_auth if
           conn.basic_auth @configuration[:options][:basic_auth][:user], @configuration[:options][:basic_auth][:password] if @configuration[:options] && @configuration[:options][:basic_auth] && @configuration[:options][:basic_auth][:user] && @configuration[:options][:basic_auth][:password]
           conn.adapter  :net_http
         end

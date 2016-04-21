@@ -3,6 +3,7 @@ module DomainNameGem
     attr_reader :adapter, :status
 
     def initialize(configuration)
+      #TODO: adapter class name, should we pass in string and load class?
       @status = 'fail'
 
       if valid_configuration?(configuration)

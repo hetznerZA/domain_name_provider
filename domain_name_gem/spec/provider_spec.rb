@@ -39,6 +39,7 @@ describe DomainNameGem::Provider do
 
       context "Given the adapter class doesn't exist" do
         it "return something" do
+          pending
           configuration = { :adapter => { :class_name => Adapter, :configuration => { } } }
           dnp = DomainNameGem::Provider.new(configuration)
           expect(dnp.status).to eql 'fail'
