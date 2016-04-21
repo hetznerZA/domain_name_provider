@@ -1,65 +1,115 @@
 require 'spec_helper'
-require 'webmock/rspec'
 
 describe DomainNameGem::Adapters::RestClient do
-  context "Initialization" do
-    it "remember configuration" do
-      configuration = { :uri => 'http://example.com/folder/file' }
-      rest_client = DomainNameGem::Adapters::RestClient.new(configuration)
 
-      expect(rest_client.configuration).to eql configuration
+  let(:valid_config) {{:scheme => 'http', :host => 'www.example.com'}}
+
+  context "Initialization" do
+    it "returns the configuration" do
+      dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+      expect(dnarc.configuration).to eql valid_config
+    end
+  end
+
+  context "#valid_configuration?" do
+    it "returns true if configuration is valid" do
+      dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+      expect(dnarc.valid_configuration?).to eql true
     end
 
-    context "validate configuration" do
-      context "return true" do
-        it "returns true if the configuration is valid" do
-          valid_configuration = { :uri => "http://www.example.com/domain?domain_name=test.com" }
-          rest_client = DomainNameGem::Adapters::RestClient.new(valid_configuration)
+    context "Invalid configuration" do
+      it "returns false if empty" do
+        dnarc = DomainNameGem::Adapters::RestClient.new({})
+        expect(dnarc.valid_configuration?).to eql false
+      end
 
-          expect(rest_client.valid_configuration?).to eql true
+      it "returns false if scheme empty" do
+        dnarc = DomainNameGem::Adapters::RestClient.new({:host => 'example.com'})
+        expect(dnarc.valid_configuration?).to eql false
+      end
+
+      it "returns false if host empty" do
+        dnarc = DomainNameGem::Adapters::RestClient.new({:sceme => 'https'})
+        expect(dnarc.valid_configuration?).to eql false
+      end
+    end
+  end
+
+  context "#setup_connection" do
+    it "returns a connection" do
+      valid_config = { :scheme => 'http', :host => 'www.example.com' }
+      dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+      dnarc.setup_connection
+
+      expect(dnarc.connection.class).to eql Faraday::Connection
+    end
+
+    context "Additional options" do
+      context "SSL verification" do
+        it "return true by default" do
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+          dnarc.setup_connection
+
+          expect(dnarc.connection.ssl.verify).to eql true
+        end
+
+        it "return false if options :verify_ssl is set to false" do
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+          options = { :verify_ssl => false }
+          dnarc.setup_connection(options)
+
+          expect(dnarc.connection.ssl.verify).to eql false
         end
       end
 
-      context "return false" do
-        it "if configuration is empty" do
-          rest_client = DomainNameGem::Adapters::RestClient.new({})
-          expect(rest_client.valid_configuration?).to eql false
+      context "Basic authorization" do
+        it "By default it should not use basic auth" do
+          connection = double(Faraday::Connection).as_null_object
+          allow(Faraday::Connection).to receive(:new) { connection }
+
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+          expect(connection).not_to receive(:basic_auth).with('test', 'secret')
+
+          dnarc.setup_connection
         end
 
-        it "if configuration is missing a uri" do
-          invalid_configuration = { :port => 80 }
-          rest_client = DomainNameGem::Adapters::RestClient.new(invalid_configuration)
+        it "Setup the connection request with basic auth" do
+          options = { :basic_auth => { :user => 'test', :password => 'secret' } }
 
-          expect(rest_client.valid_configuration?).to eql false
-        end
+          connection = double(Faraday::Connection).as_null_object
+          allow(Faraday::Connection).to receive(:new) { connection }
 
-        it "if the uri is not valid" do
-          invalid_uri_configuration = { :uri => "www.example.com/domain?domain_name=test.com" }
-          rest_client = DomainNameGem::Adapters::RestClient.new(invalid_uri_configuration)
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+          expect(connection).to receive(:basic_auth).with('test', 'secret')
 
-          expect(rest_client.valid_configuration?).to eql false
+          dnarc.setup_connection(options)
         end
       end
     end
   end
 
-  context "#servers_domain_hosted_on" do
-    it "return a list of servers the given domain is hosted on" do
-      stub_request(:get, "http://www.example.com/domain?domain_name=test.com").to_return(:status => 200, :body => { :hostnames => ["server.example.com"] }.to_json, :headers => {})
+  context "#get" do
+    it "makes a GET call to the correct path" do
+      double_faraday = double(Faraday::Connection).as_null_object
+      allow(Faraday::Connection).to receive(:new) { double_faraday }
 
-      valid_configuration = { :uri => "http://www.example.com/domain?domain_name=test.com" }
-      rest_client = DomainNameGem::Adapters::RestClient.new(valid_configuration)
+      dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+      dnarc.setup_connection
 
-      expect(rest_client.servers_domain_hosted_on('testdomain.co.za')).to eql ['server.example.com']
+      expect(double_faraday).to receive(:get).with("/path", {})
+      dnarc.get('/path')
     end
 
-    it "return a empty list if no results is found for a given domain" do
-      stub_request(:get, "http://www.example.com/domain?domain_name=test.com").to_return(:status => 200, :body => { :hostnames => [] }.to_json, :headers => {})
 
-      valid_configuration = { :uri => "http://www.example.com/domain?domain_name=test.com" }
-      rest_client = DomainNameGem::Adapters::RestClient.new(valid_configuration)
+    it "makes a GET call to the correct PATH with the provided params" do
+      double_faraday = double(Faraday::Connection).as_null_object
+      allow(Faraday::Connection).to receive(:new) { double_faraday }
 
-      expect(rest_client.servers_domain_hosted_on('testdomain.co.za')).to eql []
+      dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+      dnarc.setup_connection
+
+      expect(double_faraday).to receive(:get).with("/path", {:var => "test"})
+      dnarc.get('/path', {:var => 'test'})
     end
   end
 end

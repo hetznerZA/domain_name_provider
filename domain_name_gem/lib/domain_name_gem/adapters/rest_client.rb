@@ -5,35 +5,34 @@ require 'uri'
 module DomainNameGem
   module Adapters
     class RestClient
-      attr_reader :configuration
+      attr_reader :configuration, :connection
 
       def initialize(configuration)
         @configuration = configuration
       end
 
       def valid_configuration?
-        return false if @configuration.empty?
-        return true if @configuration[:uri] && @configuration[:uri] =~ URI::regexp
+        return true if validate_configuration(@configuration)
         false
       end
 
-      def servers_domain_hosted_on(domain_name)
-        url = URI.parse(@configuration[:uri])
-        setup_connection(url)
-        get(url.request_uri)
+      def validate_configuration(configuration)
+        #TODO: Improve validation: verify scheme == http/s and if host or ip is valid
+        return true if configuration[:scheme] && configuration[:host]
       end
 
-      private
-      def setup_connection(url, ssl_options = { :ssl => { :verify => true } }, basic_auth = {})
-        @connection = Faraday.new(:url => "#{url.scheme}://#{url.host}") do |connection|
-          #connection.request  :basic_authentication, @configuration[:user], @configuration[:password]
-          connection.adapter  :net_http
+      def setup_connection(options = {})
+        parameters = { :url => "#{@configuration[:scheme]}://#{@configuration[:host]}", :ssl => { :verify => true } }
+        parameters[:ssl][:verify] = false if options[:verify_ssl] == false
+
+        @connection = Faraday.new(parameters).tap do |conn|
+          conn.basic_auth options[:basic_auth][:user], options[:basic_auth][:password] if options[:basic_auth] && options[:basic_auth][:user] && options[:basic_auth][:password]
+          conn.adapter  :net_http
         end
       end
 
-      def get(uri)
-        response = @connection.get(uri)
-        JSON.parse(response.body)["hostnames"]
+      def get(path, params = {})
+        @connection.get(path, params)
       end
     end
   end
