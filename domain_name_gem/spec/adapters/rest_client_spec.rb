@@ -42,7 +42,6 @@ describe DomainNameGem::Adapters::RestClient do
 
   context "#setup_connection" do
     it "returns a connection" do
-      valid_config = { :scheme => 'http', :host => 'www.example.com' }
       dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
       dnarc.setup_connection
 
@@ -59,9 +58,10 @@ describe DomainNameGem::Adapters::RestClient do
         end
 
         it "return false if options :verify_ssl is set to false" do
-          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
-          options = { :verify_ssl => false }
-          dnarc.setup_connection(options)
+          options = {:options => {:verify_ssl => false}}
+
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config.merge(options))
+          dnarc.setup_connection
 
           expect(dnarc.connection.ssl.verify).to eql false
         end
@@ -79,15 +79,15 @@ describe DomainNameGem::Adapters::RestClient do
         end
 
         it "Setup the connection request with basic auth" do
-          options = { :basic_auth => { :user => 'test', :password => 'secret' } }
+          options = {:options => {:basic_auth => { :user => 'test', :password => 'secret'}}}
 
           connection = double(Faraday::Connection).as_null_object
           allow(Faraday::Connection).to receive(:new) { connection }
 
-          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config)
+          dnarc = DomainNameGem::Adapters::RestClient.new(valid_config.merge(options))
           expect(connection).to receive(:basic_auth).with('test', 'secret')
 
-          dnarc.setup_connection(options)
+          dnarc.setup_connection
         end
       end
     end

@@ -21,12 +21,12 @@ module DomainNameGem
         return true if configuration[:scheme] && configuration[:host] && configuration[:path]
       end
 
-      def setup_connection(options = {})
+      def setup_connection
         parameters = { :url => "#{@configuration[:scheme]}://#{@configuration[:host]}", :ssl => { :verify => true } }
-        parameters[:ssl][:verify] = false if options[:verify_ssl] == false
+        parameters[:ssl][:verify] = false if @configuration[:options] && @configuration[:options][:verify_ssl] == false
 
         @connection = Faraday.new(parameters).tap do |conn|
-          conn.basic_auth options[:basic_auth][:user], options[:basic_auth][:password] if options[:basic_auth] && options[:basic_auth][:user] && options[:basic_auth][:password]
+          conn.basic_auth @configuration[:options][:basic_auth][:user], @configuration[:options][:basic_auth][:password] if @configuration[:options] && @configuration[:options][:basic_auth] && @configuration[:options][:basic_auth][:user] && @configuration[:options][:basic_auth][:password]
           conn.adapter  :net_http
         end
       end
