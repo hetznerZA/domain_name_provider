@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DomainNameGem::Adapters::RestClient do
 
-  let(:valid_config) {{:scheme => 'http', :host => 'www.example.com'}}
+  let(:valid_config) {{:scheme => 'http', :host => 'www.example.com', :path => '/path'}}
 
   context "Initialization" do
     it "returns the configuration" do
@@ -24,12 +24,17 @@ describe DomainNameGem::Adapters::RestClient do
       end
 
       it "returns false if scheme empty" do
-        dnarc = DomainNameGem::Adapters::RestClient.new({:host => 'example.com'})
+        dnarc = DomainNameGem::Adapters::RestClient.new({:host => 'example.com', :path => '/path'})
         expect(dnarc.valid_configuration?).to eql false
       end
 
       it "returns false if host empty" do
-        dnarc = DomainNameGem::Adapters::RestClient.new({:sceme => 'https'})
+        dnarc = DomainNameGem::Adapters::RestClient.new({:scheme => 'http', :path => '/path'})
+        expect(dnarc.valid_configuration?).to eql false
+      end
+
+      it "returns false if path empty" do
+        dnarc = DomainNameGem::Adapters::RestClient.new({:scheme => 'https', :host => 'example.com'})
         expect(dnarc.valid_configuration?).to eql false
       end
     end

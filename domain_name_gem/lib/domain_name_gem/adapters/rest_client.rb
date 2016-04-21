@@ -17,8 +17,8 @@ module DomainNameGem
       end
 
       def validate_configuration(configuration)
-        #TODO: Improve validation: verify scheme == http/s and if host or ip is valid
-        return true if configuration[:scheme] && configuration[:host]
+        #TODO: Improve validation: verify scheme == http/s and if host or ip is valid and path valid has /
+        return true if configuration[:scheme] && configuration[:host] && configuration[:path]
       end
 
       def setup_connection(options = {})
