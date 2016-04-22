@@ -1,6 +1,5 @@
 require 'faraday'
 require 'json'
-require 'uri'
 
 module DomainNameGem
   module Adapters
