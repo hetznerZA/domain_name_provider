@@ -7,7 +7,7 @@ module DomainNameGem
         setup_connection
         #TODO: query should come from config
         #{ :query => { :name => 'piet', :surname => ''}}
-        params = @configuration[query]
+        #params = @configuration[query]
 
         response = get(@configuration[:path], {:domain_name => domain_name})
 

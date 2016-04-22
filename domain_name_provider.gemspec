@@ -1,13 +1,13 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'domain_name_gem/version'
+require 'domain_name_provider/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "domain_name_gem"
+  spec.name          = "domain_name_provider"
   spec.version       = DomainNameGem::VERSION
-  spec.authors       = ["Matt Brie"]
-  spec.email         = ["matthewbried@gmail.com"]
+  spec.authors       = ["Matt Brie", "Tiaan van Deventer"]
+  spec.email         = ["matthewbried@gmail.com", "tiaanvandeventer@gmail.com"]
 
   spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
   spec.description   = %q{TODO: Write a longer description or delete this line.}
