@@ -1,3 +1,3 @@
-module DomainNameGem
+module DomainNameProvider
   VERSION = "0.1.0"
 end

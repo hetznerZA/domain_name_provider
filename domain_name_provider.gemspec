@@ -5,7 +5,7 @@ require 'domain_name_provider/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "domain_name_provider"
-  spec.version       = DomainNameGem::VERSION
+  spec.version       = DomainNameProvider::VERSION
   spec.authors       = ["Matt Brie", "Tiaan van Deventer"]
   spec.email         = ["matthewbried@gmail.com", "tiaanvandeventer@gmail.com"]
 

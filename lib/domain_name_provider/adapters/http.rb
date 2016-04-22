@@ -1,6 +1,6 @@
 require 'json'
 
-module DomainNameGem
+module DomainNameProvider
   module Adapters
     class Http < RestClient
       def servers_domain_hosted_on(domain_name)

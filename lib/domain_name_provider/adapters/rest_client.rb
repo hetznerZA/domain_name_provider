@@ -1,7 +1,7 @@
 require 'faraday'
 require 'json'
 
-module DomainNameGem
+module DomainNameProvider
   module Adapters
     class RestClient
       attr_reader :configuration, :connection

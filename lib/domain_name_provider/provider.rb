@@ -1,4 +1,4 @@
-module DomainNameGem
+module DomainNameProvider
   class Provider
     attr_reader :adapter, :status
 
