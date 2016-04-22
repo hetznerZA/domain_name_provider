@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hetznerZA/domain_name_provider.svg?branch=master)](https://travis-ci.org/hetznerZA/domain_name_provider)
+
 # DomainNameProvider
 
 This gem provides the ability to talk to Hetzner api regarding domain_name end points.
