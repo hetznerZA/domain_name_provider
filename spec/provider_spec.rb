@@ -5,7 +5,7 @@ describe DomainNameProvider::Provider do
     context "configuration" do
       context "Given valid configuration" do
         it "return success status" do
-          valid_configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { :user => 'test_user' } } }
+          valid_configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { :user => 'test_user' } } }
 
           dnp = DomainNameProvider::Provider.new(valid_configuration)
           expect(dnp.status).to eql 'success'
@@ -25,13 +25,13 @@ describe DomainNameProvider::Provider do
     context "Adapter initialization" do
       context "Given an valid adapter class and configuration" do
         it "return the correct adapter class name" do
-          configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { :user => 'test' } } }
+          configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { :user => 'test' } } }
           dnp = DomainNameProvider::Provider.new(configuration)
           expect(dnp.adapter.class).to eql FakeAdapter
         end
 
         it "return an success status" do
-          configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { :user => 'test' } } }
+          configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { :user => 'test' } } }
           dnp = DomainNameProvider::Provider.new(configuration)
           expect(dnp.status).to eql 'success'
         end
@@ -40,7 +40,7 @@ describe DomainNameProvider::Provider do
       context "Given the adapter class doesn't exist" do
         it "return something" do
           pending
-          configuration = { :adapter => { :class_name => Adapter, :configuration => { } } }
+          configuration = { :adapter => { :class_name => 'Adapter', :configuration => { } } }
           dnp = DomainNameProvider::Provider.new(configuration)
           expect(dnp.status).to eql 'fail'
         end
@@ -48,7 +48,7 @@ describe DomainNameProvider::Provider do
 
       context "Given invalid adapter configuration" do
         it "return an fail status" do
-          configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { } } }
+          configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { } } }
           dnp = DomainNameProvider::Provider.new(configuration)
           expect(dnp.status).to eql 'fail'
         end
@@ -58,14 +58,14 @@ describe DomainNameProvider::Provider do
 
   context "#servers_domain_hosted_on" do
     it "return a list of servers" do
-      configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { :user => 'test' } } }
+      configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { :user => 'test' } } }
       dnp = DomainNameProvider::Provider.new(configuration)
 
       expect(dnp.servers_domain_hosted_on('setup_on_one_server.co.za')).to eql ['server100.example.com']
     end
 
     it "return an empty list if no results are found" do
-      configuration = { :adapter => { :class_name => FakeAdapter, :configuration => { :user => 'test' } } }
+      configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { :user => 'test' } } }
       dnp = DomainNameProvider::Provider.new(configuration)
 
       expect(dnp.servers_domain_hosted_on('not_setup_on_any_servers.co.za')).to be_empty
