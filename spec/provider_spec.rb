@@ -13,11 +13,11 @@ describe DomainNameProvider::Provider do
       end
 
       context "Given invalid configuration" do
-        it "return an fail status" do
+        it "return an failure status" do
           invalid_configuration = { :adapter => nil }
 
           dnp = DomainNameProvider::Provider.new(invalid_configuration)
-          expect(dnp.status).to eql 'fail'
+          expect(dnp.status).to eql 'failure'
         end
       end
     end
@@ -38,10 +38,10 @@ describe DomainNameProvider::Provider do
       end
 
       context "Given invalid adapter configuration" do
-        it "return an fail status" do
+        it "return an failure status" do
           configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { } } }
           dnp = DomainNameProvider::Provider.new(configuration)
-          expect(dnp.status).to eql 'fail'
+          expect(dnp.status).to eql 'failure'
         end
       end
 

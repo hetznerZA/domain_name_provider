@@ -3,7 +3,7 @@ module DomainNameProvider
     attr_reader :adapter, :status
 
     def initialize(configuration)
-      @status = 'fail'
+      @status = 'failure'
 
       if valid_configuration?(configuration)
         @adapter = Object.const_get(configuration[:adapter][:class_name]).new(configuration[:adapter][:configuration])
