@@ -15,7 +15,7 @@ describe DomainNameProvider::Adapters::Http do
     end
 
     it "return a empty list if no results is found for a given domain" do
-      stub_request(:get, "http://www.example.com/path?domain_name=testdomain.co.za").to_return(:status => 199, :body => { :hostnames => [] }.to_json, :headers => {})
+      stub_request(:get, "http://www.example.com/path?domain_name=testdomain.co.za").to_return(:status => 200, :body => { :hostnames => [] }.to_json, :headers => {})
 
       http = DomainNameProvider::Adapters::Http.new(valid_config)
 

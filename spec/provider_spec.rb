@@ -37,20 +37,18 @@ describe DomainNameProvider::Provider do
         end
       end
 
-      context "Given the adapter class doesn't exist" do
-        it "return something" do
-          pending
-          configuration = { :adapter => { :class_name => 'Adapter', :configuration => { } } }
-          dnp = DomainNameProvider::Provider.new(configuration)
-          expect(dnp.status).to eql 'fail'
-        end
-      end
-
       context "Given invalid adapter configuration" do
         it "return an fail status" do
           configuration = { :adapter => { :class_name => 'FakeAdapter', :configuration => { } } }
           dnp = DomainNameProvider::Provider.new(configuration)
           expect(dnp.status).to eql 'fail'
+        end
+      end
+
+      context "Given the adapter class doesn't exist" do
+        it "raise a NameError" do
+          configuration = { :adapter => { :class_name => 'Adapter', :configuration => { } } }
+          expect { dnp = DomainNameProvider::Provider.new(configuration) } .to raise_error(NameError)
         end
       end
     end
